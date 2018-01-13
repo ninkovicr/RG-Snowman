@@ -8,8 +8,8 @@
 |   :---:       |   :---:            |
 |   g           |  pokretanje igre   |
 |   p           |  pauziranje        |
-|   a           |  kretanje u levo   |
-|   d           |  kretanje u desno  |
+|   a           |  kretanje levo     |
+|   d           |  kretanje desno    |
 |   w           |  kretanje gore     |
 |   s           |  kretanje dole     |
 |   Esc         |  izlazak iz igrice |
