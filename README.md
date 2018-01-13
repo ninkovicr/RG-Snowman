@@ -1,6 +1,6 @@
 # RG080-snowman
 
-video_game: Komande
+**Komande**
 
 | Komanda       |   Opis            |
 |   :---:       |   :---:           |
@@ -12,7 +12,7 @@ video_game: Komande
 |   s           |  kretanje dole    |
 |   Esc         |  izlazak iz igrice|
 
-computer: Opis
+**Opis**
 * Snesko skuplja grudve i uvecava se nakon 5 skupljenih.
 * Snesko ima 3 zivota.
 * Vrele kule donose negativne bodove i smanjuju zivote.
