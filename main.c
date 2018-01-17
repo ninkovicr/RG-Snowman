@@ -98,7 +98,7 @@ int main(int argc, char** argv){
     snowMan->zKor = -0.15;     
     
     vx = 0;
-    vz = 0.105;
+    vz = 0.155;
     
     int seed = time(NULL);
     srand(seed);
@@ -155,7 +155,7 @@ static void on_keyboard(unsigned char key, int x, int y){
                 snowMan->zKor = -0.15;     
                 
                 vx = 0;
-                vz = 0.105;
+                vz = 0.155;
                 
                 points = 0;
                 lives = 3;
@@ -166,20 +166,20 @@ static void on_keyboard(unsigned char key, int x, int y){
             break;
         /* Komande za kretanje levo, desno, napred i nazad */
         case 'a':
-                vx = -0.105;
+                vx = -0.155;
                 vz = 0;
             break;
         case 'd':
-                vx = 0.105;
+                vx = 0.155;
                 vz = 0;
             break;
         case 's':
                 vx = 0;
-                vz = 0.105;
+                vz = 0.155;
             break;
         case 'w':
                 vx = 0;
-                vz = -0.105;
+                vz = -0.155;
             break;
     }
 }
