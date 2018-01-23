@@ -98,7 +98,7 @@ int main(int argc, char** argv){
     snowMan->zKor = -0.15;     
     
     vx = 0;
-    vz = 0.009;
+    vz = 0.0085;
     
     int seed = time(NULL);
     srand(seed);
@@ -107,7 +107,7 @@ int main(int argc, char** argv){
     for(int i=0; i<SNOWFLAKE_MAX; i++){
         //snowFlakes[i].r = 0.02;
         snowFlakes[i].x = 2.0*(float)rand()/RAND_MAX - 1.0;
-        snowFlakes[i].y = 1.8;
+        snowFlakes[i].y = 1.5;
         snowFlakes[i].z = 2.0*(float)rand()/RAND_MAX - 1.0;
         snowFlakes[i].alive = false;
         //printf("%f %f %f\n", snowFlakes[i].x, snowFlakes[i].y, snowFlakes[i].z);
@@ -155,7 +155,7 @@ static void on_keyboard(unsigned char key, int x, int y){
                 snowMan->zKor = -0.15;     
                 
                 vx = 0;
-                vz = 0.009;
+                vz = 0.0085;
                 
                 points = 0;
                 lives = 3;
@@ -166,20 +166,20 @@ static void on_keyboard(unsigned char key, int x, int y){
             break;
         /* Komande za kretanje levo, desno, napred i nazad */
         case 'a':
-                vx = -0.009;
+                vx = -0.0085;
                 vz = 0;
             break;
         case 'd':
-                vx = 0.009;
+                vx = 0.0085;
                 vz = 0;
             break;
         case 's':
                 vx = 0;
-                vz = 0.009;
+                vz = 0.0085;
             break;
         case 'w':
                 vx = 0;
-                vz = -0.009;
+                vz = -0.0085;
             break;
     }
 }
@@ -509,4 +509,3 @@ bool collision(float bx, float bz, float rBoll, float xSnow, float zSnow, float 
 
     return false;
 }
-
