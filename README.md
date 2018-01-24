@@ -3,7 +3,9 @@
 ***
 
 **Pokretanje**
-* make
+
+|  Pokretanje           |  Tezina nivoa |
+| --------------------- | --------------|
 |   ./snowman 1         |  lak nivo     |
 |   ./snowman 2         |  srednji nivo |
 |   ./snowman 3         |  tezak nivo   |
