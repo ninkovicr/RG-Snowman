@@ -1,6 +1,7 @@
 #include<GL/glut.h>
 #include<math.h>
 #include<stdio.h>
+#include<stdlib.h>
 #include<stdbool.h>
 #include<time.h>
 
@@ -26,21 +27,29 @@ void drawLine();
  *Argumenti f-je: x koordinata kugle, z koordinata kugle, poluprecnik kugle, x koordinata Sneska, z koordinata Sneska, poluprecnik tela Sneska. */
 bool collision(float bx, float bz, float rBoll, float xSnow, float zSnow, float rSnow);
 
+float speedInitialization(int level); /* F-ja za inicijalizaciju brzine prilikom odabira nivoa. */
+void error(char* msg); /* F-ja za gresku ako se ne unese nivo. */
 
+
+float speedUp; /* Promenljiva za ubrzanje Sneska. */
+int level; /* Promenljiva za cuvanje nivoa pri pokretanju. */
 int points = 0; /* Promenljiva za broj poena. */
 int lives = 3; /* Promenljiva za 3 zivota, koja se smanjuje kada Snesko pokupi vatrenu kuglu. */
+
 static float vx, vz; /* Koordinate za kretanje. */
 float bx, bz; /* Koordinate bele kugle (grudve). */
 float kx, kz; /* Koordinate vatrene kugle. */ 
+
 /* Promenljiva za kreiranje grudvi i vatrenih kugli. */
 bool create_boll = true; 
 bool create_boll_fire = true;
-int snowflakeId = 0;
 
-static int animation_ongoing;
-static int animation_snowflake;
 
-/* Struktuka Pahulje - poluprecnik i koordinate. */
+int snowflakeId = 0; /* Promenljiva za trenutni broj pahulja na sceni. */
+static int animation_ongoing; /* Za pokretanje igrice. */
+static int animation_snowflake; /* Za pokretanje padanja pahulja. */
+
+/* Struktuka Pahulje - koordinate i da li je trenutno "ziva" pahulja tj. da li je treba nacrtati. */
 typedef struct{
     float x;
     float y;
@@ -48,8 +57,7 @@ typedef struct{
     bool alive;
 }SNOWFLAKE;
     
-
-SNOWFLAKE snowFlakes[SNOWFLAKE_MAX];
+SNOWFLAKE snowFlakes[SNOWFLAKE_MAX]; 
 
 /*Struktuka za Sneska - koordinate Sneska. */
 typedef struct{
@@ -92,20 +100,27 @@ int main(int argc, char** argv){
     glLineWidth(3);
     glEnable(GL_NORMALIZE);
     
-    /* Inicijalne vrednosti */
+    /* Inicijalne vrednosti za Sneska i vektore. */
     snowMan = malloc(sizeof(SNOWMAN));
     snowMan->xKor = -0.1;
     snowMan->zKor = -0.15;     
     
     vx = 0;
-    vz = 0.009;
+    vz = 0.01;
+    
+    /* Provera da li je odabran nivo. */
+    if(argc != 2)
+        error("Morate uneti zeljeni nivo: easy(1), medium(2), hard(3)");
+    
+    level  = atoi(argv[1]);
+    
+    speedUp = speedInitialization(level);
     
     int seed = time(NULL);
     srand(seed);
     
     /* Random pozicije za pahulje. */
     for(int i=0; i<SNOWFLAKE_MAX; i++){
-        //snowFlakes[i].r = 0.02;
         snowFlakes[i].x = 2.0*(float)rand()/RAND_MAX - 1.0;
         snowFlakes[i].y = 1.8;
         snowFlakes[i].z = 2.0*(float)rand()/RAND_MAX - 1.0;
@@ -114,11 +129,13 @@ int main(int argc, char** argv){
     }
     
     animation_ongoing = 0;
-    /* animation_snowflake pocinje od 1 da bi se pravilo od 1. pahulje. */
+    
     animation_snowflake = 1;
     glutTimerFunc(TIMER_SNOWFLAKE, snowflakeTimer, SNOWFLAKE_ID);
     
     glutMainLoop();
+    
+    free(snowMan);
     
     return 0;
 }
@@ -155,7 +172,9 @@ static void on_keyboard(unsigned char key, int x, int y){
                 snowMan->zKor = -0.15;     
                 
                 vx = 0;
-                vz = 0.009;
+                vz = 0.01;
+                
+                speedUp = speedInitialization(level);
                 
                 points = 0;
                 lives = 3;
@@ -166,20 +185,20 @@ static void on_keyboard(unsigned char key, int x, int y){
             break;
         /* Komande za kretanje levo, desno, napred i nazad */
         case 'a':
-                vx = -0.009;
+                vx = -0.01-speedUp;
                 vz = 0;
             break;
         case 'd':
-                vx = 0.009;
+                vx = 0.01+speedUp;
                 vz = 0;
             break;
         case 's':
                 vx = 0;
-                vz = 0.009;
+                vz = 0.01+speedUp;
             break;
         case 'w':
                 vx = 0;
-                vz = -0.009;
+                vz = -0.01-speedUp;
             break;
     }
 }
@@ -194,9 +213,11 @@ static void on_timer(int value){
     snowMan->xKor += vx;
     snowMan->zKor += vz;
     
+    /* Ako je pahulja "ziva" pocinje da pada. */
     for(int i=0; i<SNOWFLAKE_MAX; i++)
-        if(snowFlakes[i].alive)
+        if(snowFlakes[i].alive){
             snowFlakes[i].y -= 0.02;
+        }
     
     glutPostRedisplay();
 
@@ -208,12 +229,28 @@ static void snowflakeTimer(int value){
     if(SNOWFLAKE_ID != value)
         return;
     
+    /* Uvecava se broj pahulja koje treba da padaju i postavlja se da je "ziva".*/
     snowflakeId ++;
     
     snowFlakes[snowflakeId].alive = true;
     
+    /* U zavisnosti od tezine nivoa povecava se ubrzanje. */
+    switch(level){
+        case 1:
+            speedUp += 0.001;
+            break;
+        case 2:
+            speedUp += 0.003;
+            break;
+        case 3:
+            speedUp += 0.005;
+            break;
+    }
+    
+    //printf("%f \n",speedUp);
+    
     if(animation_snowflake)
-        glutTimerFunc(TIMER_SNOWFLAKE+100, snowflakeTimer, SNOWFLAKE_ID);
+        glutTimerFunc(TIMER_SNOWFLAKE+20, snowflakeTimer, SNOWFLAKE_ID);
 }
 
 static void on_display(void)
@@ -257,7 +294,8 @@ static void on_display(void)
   
     /* Crtanje pahuljica. */
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs_boll);
-    for(int i=1; i<=snowflakeId; i++){
+    
+    for(int i=0; i<snowflakeId; i++){
         glPushMatrix();
         glTranslatef(snowFlakes[i].x, snowFlakes[i].y, snowFlakes[i].z);
         glScalef(0.1, 0.1, 0.1);
@@ -510,3 +548,28 @@ bool collision(float bx, float bz, float rBoll, float xSnow, float zSnow, float 
     return false;
 }
 
+/* inicijalizacija za svaki nivo. */
+float speedInitialization(int level)
+{
+    float speed;
+    
+    switch(level){
+        case 1:
+            speed = -0.001;
+            break;
+        case 2:
+            speed = -0.003;
+            break;
+        case 3:
+            speed = -0.005;
+            break;
+    }
+    
+    return speed;
+}
+
+/* F-ja za gresku zbog argumenata komandne linije. */
+void error(char* msg){
+    printf("%s\n",msg);\
+    exit(EXIT_FAILURE);
+}
