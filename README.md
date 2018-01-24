@@ -2,6 +2,12 @@
 
 ***
 
+**Pokretanje**
+* make
+|   ./snowman 1         |  lak nivo     |
+|   ./snowman 2         |  srednji nivo |
+|   ./snowman 3         |  tezak nivo   |
+
 **Komande**
 
 | Komanda       |   Opis             |
@@ -10,8 +16,8 @@
 |   p           |  pauziranje        |
 |   a           |  kretanje levo     |
 |   d           |  kretanje desno    |
-|   w           |  kretanje gore     |
-|   s           |  kretanje dole     |
+|   w           |  kretanje nazad    |
+|   s           |  kretanje napred   |
 |   Esc         |  izlazak iz igrice |
 
 ***
